@@ -1,8 +1,10 @@
 cargo build --release
 
+$user = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+
 $action = New-ScheduledTaskAction -Execute (Resolve-Path .\target\release\gpg-restart-agent.exe)
 
-$trigger = New-CimInstance -ClassName MSFT_TaskEventTrigger `
+$trigger1 = New-CimInstance -ClassName MSFT_TaskEventTrigger `
     -Namespace Root/Microsoft/Windows/TaskScheduler `
     -ClientOnly `
     -Property @{
@@ -17,11 +19,17 @@ $trigger = New-CimInstance -ClassName MSFT_TaskEventTrigger `
 </QueryList>
 "@
 }
+$trigger2 = New-CimInstance -ClassName MSFT_TaskLogonTrigger `
+    -Namespace Root/Microsoft/Windows/TaskScheduler `
+    -ClientOnly `
+    -Property @{
+    Enabled = $true
+    UserId  = $user
+}
 
-$user = [Security.Principal.WindowsIdentity]::GetCurrent().Name
 $principal = New-ScheduledTaskPrincipal -UserId $user
 
 $task = New-ScheduledTask -Action $action -Principal $principal -Description "Restart gpg-agent when smartcard is inserted"
-$task.triggers = @($trigger)
+$task.triggers = @($trigger1, $trigger2)
 
 $task | Register-ScheduledTask -TaskName "gpg-restart-agent"
