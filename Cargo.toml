@@ -1,0 +1,6 @@
+[package]
+name = "gpg-restart-agent"
+version = "0.1.0"
+authors = ["Matthew Donoughe <mdonoughe@gmail.com>"]
+
+[dependencies]
