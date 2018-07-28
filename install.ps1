@@ -16,6 +16,11 @@ $trigger1 = New-CimInstance -ClassName MSFT_TaskEventTrigger `
             *[System[Provider[@Name='Microsoft-Windows-SmartCard-DeviceEnum'] and EventID=101]]
         </Select>
     </Query>
+    <Query Id="1" Path="System">
+        <Select Path="System">
+            *[System[Provider[@Name='Microsoft-Windows-Kernel-Power'] and EventID=107]]
+        </Select>
+    </Query>
 </QueryList>
 "@
 }
