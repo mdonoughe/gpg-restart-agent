@@ -9,8 +9,7 @@ use std::process::ChildStdout;
 use std::process::{Command, Stdio};
 use std::sync::mpsc;
 use std::thread;
-
-const CREATE_NO_WINDOW: u32 = 0x08000000;
+use thiserror::Error;
 
 fn output<R: Read + 'static + Send, F: 'static + Send + FnOnce() -> W, W: Write>(
     writer: F,
@@ -26,21 +25,12 @@ fn output<R: Read + 'static + Send, F: 'static + Send + FnOnce() -> W, W: Write>
     tx
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 enum AgentError {
+    #[error("Failed to execute gpg-connect-agent")]
     Failed,
+    #[error("gpg-connect-agent exited with code {0}")]
     Error(i32),
-}
-
-impl Error for AgentError {}
-
-impl fmt::Display for AgentError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        match self {
-            AgentError::Failed => write!(f, "Failed to execute gpg-connect-agent"),
-            AgentError::Error(code) => write!(f, "gpg-connect-agent exited with code {}", code),
-        }
-    }
 }
 
 fn run(
