@@ -6,3 +6,8 @@ edition = "2018"
 
 [dependencies]
 thiserror = "1.0.26"
+windows = "0.17.2"
+
+[build-dependencies]
+embed-resource = "1.6.3"
+windows = "0.17.2"
