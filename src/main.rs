@@ -47,7 +47,7 @@ fn run(
     args: &[&str],
     stdout: &mpsc::SyncSender<ChildStdout>,
     stderr: &mpsc::SyncSender<ChildStderr>,
-) -> Result<(), Box<Error>> {
+) -> Result<(), Box<dyn Error>> {
     let mut child = Command::new("gpg-connect-agent")
         .args(args)
         .stdin(Stdio::null())
@@ -65,7 +65,7 @@ fn run(
     }
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let stdout = output(io::stdout);
     let stderr = output(io::stderr);
 
